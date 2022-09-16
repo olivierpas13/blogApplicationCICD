@@ -35,6 +35,10 @@ app.use('/api/blogs', blogRouter);
 app.use('/api/testing', testingRouter);
 // }
 
+app.get('/health', (req, res) => {
+  res.send('ok');
+});
+
 app.use(errorHandler);
 
 module.exports = app;

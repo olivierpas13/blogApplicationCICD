@@ -1,0 +1,57 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  Deployment:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install dependencies 
+        run: npm ci  
+      - name: Run lint
+        run: npm run eslint
+      - name: Build
+        run: npm run build
+      - name: Testing
+        run: npm run test
+      - name: e2e tests
+        uses: cypress-io/github-action@v4
+        with:
+           build: npm run build
+           start: npm run start
+           wait-on: http://localhost:3003
+      - name: Deployment to heroku
+        if: ${{!contains(join(github.event.commits.*.message, ' '), '#skip')}}
+        uses: akhileshns/heroku-deploy@v3.12.12 
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}   
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          healthcheck: "https://cicdaplicacion.herokuapp.com/health"
+          checkstring: "ok"
+          rollbackonhealthcheckfailed: true
+   
+  tag_release:
+    name: Versioning
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.40.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFAULT_BUMP: patch

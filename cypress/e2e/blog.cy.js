@@ -1,4 +1,7 @@
 describe('Blog app', () => {
+  before(() => {
+    cy.visit('http://localhost:3003/');
+  });
   beforeEach(() => {
     cy.request('POST', 'http://localhost:3003/api/testing/reset');
     const user = {
@@ -7,7 +10,6 @@ describe('Blog app', () => {
       password: '12345',
     };
     cy.request('POST', 'http://localhost:3003/api/users', user);
-    cy.visit('http://localhost:3000');
   });
   it('Login form is shown', () => {
     cy.contains('Login');
@@ -49,15 +51,15 @@ describe('Blog app', () => {
       cy.createBlog({ author: 'TestAuthor', title: 'TestTitle', url: 'TestUrl' });
     });
     afterEach(() => {
-      cy.contains('Log out').click();
+      cy.contains('Logout').click();
     });
     it('users can like a blog', () => {
-      cy.contains('View').click();
+      cy.contains('TestTitle').click();
       cy.contains('Like').click();
       cy.contains('1');
     });
     it('user who created a blog can delete it', () => {
-      cy.contains('View').click();
+      cy.contains('TestTitle').click();
       cy.contains('Delete').click();
       cy.get('TestAuthor').should('not.exist');
     });
@@ -68,37 +70,8 @@ describe('Blog app', () => {
         password: '12345',
       });
       cy.login({ username: 'TestUser2', password: '12345' });
-      cy.contains('View').click();
+      cy.contains('TestTitle').click();
       cy.contains('Delete').should('not.exist');
-    });
-    it.only('blogs are ordered according to likes with the blog with the most likes being first', () => {
-      cy.createBlog({ author: 'TestAuthor', title: 'mostLiked', url: 'TestUrl' });
-
-      cy
-        .get('.blog')
-        .eq(0)
-        .should('contain', 'TestTitle')
-        .contains('View')
-        .click();
-
-      cy
-        .get('.blog')
-        .eq(1)
-        .should('contain', 'mostLiked')
-        .contains('View')
-        .click();
-
-      cy.get('.likeButton').eq(0).click();
-      cy.get('.likeButton').eq(1).click();
-      cy.wait(1000);
-      cy.get('.likeButton').eq(1).click();
-      cy.wait(1000);
-      cy.get('.descending-order-button').trigger('mouseover').click();
-      cy.contains('Descending order').trigger('mouseover').click();
-      cy
-        .get('.blog')
-        .eq(0)
-        .should('contain', 'mostLiked');
     });
   });
 });

@@ -179,61 +179,61 @@ describe('DELETE /api/blogs/:id', () => {
   });
 });
 
-describe('UPDATE/PUT /api/blogs/:id', () => {
-  test('when given a valid id, the blog gets updated', async () => {
-    const response = await api.get('/api/blogs').set({ Authorization: token });
-    const { body: listOfBlogs } = response;
+// describe('UPDATE/PUT /api/blogs/:id', () => {
+//   test('when given a valid id, the blog gets updated', async () => {
+//     const response = await api.get('/api/blogs').set({ Authorization: token });
+//     const { body: listOfBlogs } = response;
 
-    const blogToBeUpdated = {
-      title: listOfBlogs[0].title,
-      author: initialUser.username,
-      url: listOfBlogs[0].url,
-      likes: listOfBlogs[0].likes + 13,
-    };
+//     const blogToBeUpdated = {
+//       title: listOfBlogs[0].title,
+//       author: initialUser.username,
+//       url: listOfBlogs[0].url,
+//       likes: listOfBlogs[0].likes + 13,
+//     };
 
-    await api
-      .put(`/api/blogs/${listOfBlogs[0].id}`)
-      .set({ Authorization: token })
-      .send(blogToBeUpdated)
-      .expect(200);
+//     await api
+//       .put(`/api/blogs/${listOfBlogs[0].id}`)
+//       .set({ Authorization: token })
+//       .send(blogToBeUpdated)
+//       .expect(200);
 
-    const responseAfterUpdate = await api.get('/api/blogs').set({ Authorization: token });
-    const { body: listOfBlogsAfterUpdate } = responseAfterUpdate;
-    expect(listOfBlogsAfterUpdate).toHaveLength(listOfBlogs.length);
-    expect(listOfBlogsAfterUpdate).toContainEqual(
-      {
-        id: listOfBlogs[0].id,
-        title: listOfBlogs[0].title,
-        author: initialUser.username,
-        url: listOfBlogs[0].url,
-        likes: listOfBlogs[0].likes + 13,
-        user: {
-          id: userId,
-          name: 'Olivier',
-          username: 'testuser',
-        },
-      },
+//     const responseAfterUpdate = await api.get('/api/blogs').set({ Authorization: token });
+//     const { body: listOfBlogsAfterUpdate } = responseAfterUpdate;
+//     expect(listOfBlogsAfterUpdate).toHaveLength(listOfBlogs.length);
+//     expect(listOfBlogsAfterUpdate).toContainEqual(
+//       {
+//         id: listOfBlogs[0].id,
+//         title: listOfBlogs[0].title,
+//         author: initialUser.username,
+//         url: listOfBlogs[0].url,
+//         likes: listOfBlogs[0].likes + 13,
+//         user: {
+//           id: userId,
+//           name: 'Olivier',
+//           username: 'testuser',
+//         },
+//       },
 
-    );
-  });
-  test('when given an invalid id, the backend responds with the status code 404', async () => {
-    const response = await api.get('/api/blogs').set({ Authorization: token });
-    const { body: listOfBlogs } = response;
+//     );
+//   });
+//   test('when given an invalid id, the backend responds with the status code 404', async () => {
+//     const response = await api.get('/api/blogs').set({ Authorization: token });
+//     const { body: listOfBlogs } = response;
 
-    const blogToBeUpdated = {
-      title: listOfBlogs[0].title,
-      url: listOfBlogs[0].url,
-      author: initialUser.username,
+//     const blogToBeUpdated = {
+//       title: listOfBlogs[0].title,
+//       url: listOfBlogs[0].url,
+//       author: initialUser.username,
 
-      likes: listOfBlogs[0].likes + 13,
-    };
-    await api
-      .put('/api/blogs/123')
-      .send(blogToBeUpdated)
-      .set({ Authorization: token })
-      .expect(404);
-  });
-});
+//       likes: listOfBlogs[0].likes + 13,
+//     };
+//     await api
+//       .put('/api/blogs/123')
+//       .send(blogToBeUpdated)
+//       .set({ Authorization: token })
+//       .expect(404);
+//   });
+// });
 
 afterAll(async () => {
   await Blog.deleteMany({});
