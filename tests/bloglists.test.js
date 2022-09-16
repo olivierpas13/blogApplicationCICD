@@ -1,3 +1,4 @@
+jest.setTimeout(60000);
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
@@ -36,7 +37,6 @@ const initialUser = {
   password: 'supersecret',
 };
 beforeAll(async () => {
-  jest.setTimeout(60000);
   await User.deleteMany({});
   await api
     .post('/api/users/')
@@ -58,7 +58,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  jest.setTimeout(60000);
   await Blog.deleteMany({});
 
   for (const blog of initialBlogs) {
