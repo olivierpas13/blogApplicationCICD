@@ -27,6 +27,9 @@ jobs:
       #   run: npm run test
       - name: e2e tests
         uses: cypress-io/github-action@v4
+        env: 
+          MONGODB_URI: ${{secrets.MONGODB_URI}}
+          PORT: ${{secrets.PORT}}
         with:
            build: npm run build
            start: npm run start
@@ -36,6 +39,7 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12 
         env: 
           MONGODB_URI: ${{secrets.MONGODB_URI}}
+          PORT: ${{secrets.PORT}}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}   
