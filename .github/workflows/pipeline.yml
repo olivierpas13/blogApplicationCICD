@@ -31,7 +31,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
            build: npm run build
-           start: npm run start
+           start: npm run start $MONGODB_URI
            wait-on: http://localhost:3003
       - name: Deployment to heroku
         if: ${{!contains(join(github.event.commits.*.message, ' '), '#skip')}}
