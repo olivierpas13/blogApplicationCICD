@@ -43,7 +43,7 @@ jobs:
    
   tag_release:
     name: Versioning
-    needs: [simple_deployment_pipeline]
+    needs: [Deployment]
     runs-on: ubuntu-22.04
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')}}
     steps:
